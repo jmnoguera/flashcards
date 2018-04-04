@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <!--Fondo-->
+    <ImageView
+        android:id="@+id/flashcardBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimaryDark" />
+
+    <!--Texto a traducir o lo que sea-->
+    <TextView
+        android:id="@+id/flashcardWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/flashcardBackground"
+        android:paddingTop="20dp"
+        android:gravity="center"
+        android:textColor="@color/pureWhite"
+        android:text="TextView" />
+
+    <!--
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/collectionImage"
+        android:layout_alignTop="@+id/collectionImage"
+        android:text="TextView" />
+        -->
+</RelativeLayout>

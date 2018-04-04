@@ -1,5 +1,6 @@
 package com.joselestnh.flashcards;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,13 +9,36 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    GridView gridView;
+    int images[] = {R.drawable.phaceholder};
+    String descriptions[] = {"Placeholder"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //cargar de donde sea los datos de las colecciones
+
+        gridView = this.findViewById(R.id.collectionsPool);
+        CollectionGridAdapter adapter = new CollectionGridAdapter(MainActivity.this, images, descriptions);
+        gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MainActivity.this, "Llega", Toast.LENGTH_SHORT).show();
+
+                openFlashcardsPool(position);
+            }
+        });
+
+        //por defeto en el layout con +
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -49,4 +73,18 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    //revisar argumentos que necesite: position,...
+    public void openFlashcardsPool(int position){
+        Intent intent = new Intent(this, FlashcardsActivity.class);
+        //cambiar por recuperar datos de la db
+        intent.putExtra(FlashcardsActivity.KEY_FC_IMAGES,this.images);
+        intent.putExtra(FlashcardsActivity.KEY_FC_WORDSA,this.descriptions);
+        intent.putExtra(FlashcardsActivity.KEY_FC_WORDSB,this.descriptions);
+        //putextra o bundle
+
+        startActivity(intent);
+
+    }
+
 }

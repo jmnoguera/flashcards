@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.joselestnh.flashcards.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context="com.joselestnh.flashcards.FlashcardsActivity"
+    tools:showIn="@layout/activity_flashcards">
 
     <GridView
-        android:id="@+id/collectionsPool"
+        android:id="@+id/flashcardsPool"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnWidth="80dp"
