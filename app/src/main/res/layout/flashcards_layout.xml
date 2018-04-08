@@ -1,37 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/collectionLayout"
+android:layout_width="180dp"
+android:layout_height="180dp">
 
-    <!--Fondo-->
+
     <ImageView
-        android:id="@+id/flashcardBackground"
+        android:id="@+id/flashcardImage"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="150dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@color/colorPrimaryDark" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
-    <!--Texto a traducir o lo que sea-->
+    <TextView
+        android:id="@+id/flashcardName"
+        android:layout_width="169dp"
+        android:layout_height="25dp"
+        android:layout_alignEnd="@+id/flashcardImage"
+        android:layout_alignStart="@+id/flashcardImage"
+        android:layout_below="@+id/flashcardImage"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="@+id/flashcardImage"
+        app:layout_constraintStart_toStartOf="@+id/flashcardImage"
+        app:layout_constraintTop_toBottomOf="@+id/flashcardImage" />
+
     <TextView
         android:id="@+id/flashcardWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@id/flashcardBackground"
-        android:paddingTop="20dp"
+        android:textSize="26sp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:gravity="center"
-        android:textColor="@color/pureWhite"
-        android:text="TextView" />
-
-    <!--
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/collectionImage"
-        android:layout_alignTop="@+id/collectionImage"
-        android:text="TextView" />
-        -->
-</RelativeLayout>
+        android:text="TextView"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/flashcardImage"
+        app:layout_constraintEnd_toEndOf="@+id/flashcardImage"
+        app:layout_constraintStart_toStartOf="@+id/flashcardImage"
+        app:layout_constraintTop_toTopOf="@+id/flashcardImage" />
+</android.support.constraint.ConstraintLayout>
