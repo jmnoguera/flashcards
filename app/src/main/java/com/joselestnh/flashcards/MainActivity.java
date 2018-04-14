@@ -2,7 +2,9 @@ package com.joselestnh.flashcards;
 
 import android.arch.persistence.room.Room;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,8 +30,10 @@ public class MainActivity extends AppCompatActivity {
     private static int RESULT_COLLECTION = 2;
 
     GridView gridView;
+    CollectionGridAdapter adapter;
     private List<Collection> collectionList;
     private static AppDatabase db;
+    private List<Integer> selectedCollections = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,
                 "FlashCards-DB").build();
 
+        reloadCollections();
 
 
         //por defecto en el layout con +
@@ -56,35 +61,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, RESULT_COLLECTION);
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //cargar las colecciones
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Future<List<Collection>> result = executorService.submit(new Callable<List<Collection>>() {
-            @Override
-            public List<Collection> call() throws Exception {
-                collectionList = db.collectionDao().getAll();
-                return collectionList;
-            }
-        });
-        try {
-            collectionList = result.get();
-        } catch (Exception e){
-            collectionList = new ArrayList<>();
-        }
-        executorService.shutdown();
 
         gridView = this.findViewById(R.id.collectionsPool);
-        CollectionGridAdapter adapter = new CollectionGridAdapter(MainActivity.this, collectionList);
+        adapter = new CollectionGridAdapter(MainActivity.this, collectionList);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(MainActivity.this, "Llega", Toast.LENGTH_SHORT).show();
-
                 openFlashcardsPool(position);
             }
         });
@@ -92,6 +76,17 @@ public class MainActivity extends AppCompatActivity {
         gridView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                if (selectedCollections.contains(position)){
+                    selectedCollections.remove((Integer) position);
+                    View view = gridView.getChildAt(position);
+                    view.setBackgroundColor(Color.TRANSPARENT);
+
+                }else{
+                    selectedCollections.add(position);
+                    View view = gridView.getChildAt(position);
+                    view.setBackgroundColor(Color.LTGRAY);
+                }
+                //casmbiar color de fondo?
 
             }
 
@@ -99,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 MenuInflater inflater = mode.getMenuInflater();
                 inflater.inflate(R.menu.menu_collections, menu);
-
                 return true;
             }
 
@@ -112,7 +106,20 @@ public class MainActivity extends AppCompatActivity {
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch(item.getItemId()){
                     case R.id.collection_delete:
-                        deleteSelectedCollections();
+                        List<Collection> collectionsToDelete = new ArrayList<>();
+                        for(Integer collectionIndex : selectedCollections){
+                            collectionsToDelete.add(collectionList.get(collectionIndex));
+                            //peta al borrar algo
+                            //puede que cambien los valores mientras se borran :S
+                        }
+                        final Collection[] collectionsToDeleteArray = collectionsToDelete.toArray(new Collection[0]);
+                        new Thread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                db.collectionDao().deleteCollections(collectionsToDeleteArray);
+                            }
+                        }).start();
                         mode.finish();
                         return true;
                     default:
@@ -122,9 +129,21 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDestroyActionMode(ActionMode mode) {
-
+                selectedCollections.clear();
+                int size = gridView.getChildCount();
+                for (int i=0;i<size;i++){
+                    gridView.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                }
+                reloadCollections();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        reloadCollections();
+
     }
 
     @Override
@@ -146,6 +165,28 @@ public class MainActivity extends AppCompatActivity {
             }).start();
 
         }
+    }
+
+    private void reloadCollections(){
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Future<List<Collection>> result = executorService.submit(new Callable<List<Collection>>() {
+            @Override
+            public List<Collection> call() throws Exception {
+                collectionList = db.collectionDao().getAll();
+                return collectionList;
+            }
+        });
+        try {
+            collectionList = result.get();
+            if(adapter != null){
+                adapter.updateData(collectionList);
+            }
+
+        } catch (Exception e){
+            collectionList = new ArrayList<>();
+        }
+        executorService.shutdown();
+
     }
 
     @Override
@@ -183,15 +224,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void deleteSelectedCollections(){
-
-    }
 
     public static AppDatabase getDb() {
         return db;
     }
 
-    public static void setDb(AppDatabase db) {
-        MainActivity.db = db;
-    }
 }

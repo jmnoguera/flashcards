@@ -67,4 +67,11 @@ public class CollectionGridAdapter extends BaseAdapter {
 
         return gridView;
     }
+
+    public void updateData(List<Collection> collectionList){
+        this.collectionList = collectionList;
+        notifyDataSetChanged();
+    }
+
+
 }

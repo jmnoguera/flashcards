@@ -1,10 +1,16 @@
 package com.joselestnh.flashcards;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -22,8 +28,10 @@ public class FlashcardsActivity extends AppCompatActivity {
     private static int RESULT_FLASHCARD = 3;
 
     GridView gridView;
+    FlashcardsGridAdapter adapter;
     List<Flashcard> flashcardList;
     private String collectionName;
+    private List<Integer> selectedFlashcards = new ArrayList<>();
 //    private int images[];
 //    private String wordsA[];
 //    private String wordsB[];
@@ -36,6 +44,8 @@ public class FlashcardsActivity extends AppCompatActivity {
 //        setSupportActionBar(toolbar);
 
           //lo de arriba peta por la actionbar o toolbar
+        reloadFlashcards();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,30 +63,8 @@ public class FlashcardsActivity extends AppCompatActivity {
 //        this.wordsA = intent.getStringArrayExtra(Flashcard.KEY_FC_WORDSA);
 //        this.wordsB= intent.getStringArrayExtra(Flashcard.KEY_FC_WORDSB);
 
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //buscar en la db
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Future<List<Flashcard>> result = executorService.submit(new Callable<List<Flashcard>>() {
-            @Override
-            public List<Flashcard> call() throws Exception {
-                flashcardList = MainActivity.getDb().flashcardDao().getAllByCollection(collectionName);
-                return flashcardList;
-            }
-        });
-        try {
-            flashcardList = result.get();
-        } catch (Exception e){
-            flashcardList = new ArrayList<>();
-        }
-        executorService.shutdown();
-
         gridView = this.findViewById(R.id.flashcardsPool);
-        FlashcardsGridAdapter adapter = new FlashcardsGridAdapter(FlashcardsActivity.this, flashcardList);
+        adapter = new FlashcardsGridAdapter(FlashcardsActivity.this, flashcardList);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -84,6 +72,75 @@ public class FlashcardsActivity extends AppCompatActivity {
                 Toast.makeText(FlashcardsActivity.this, "Funciona", Toast.LENGTH_SHORT).show();
             }
         });
+
+        gridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+        gridView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                if (selectedFlashcards.contains(position)){
+                    selectedFlashcards.remove(((Integer)position));
+                    View view = gridView.getChildAt(position);
+                    view.setBackgroundColor(Color.TRANSPARENT);
+                }else{
+                    selectedFlashcards.add(position);
+                    View view = gridView.getChildAt(position);
+                    view.setBackgroundColor(Color.LTGRAY);
+                }
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.menu_flashcards, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.flashcard_delete:
+                        List<Flashcard> flashcardsToDelete = new ArrayList<>();
+                        for(Integer flashcardIndex : selectedFlashcards){
+                            flashcardsToDelete.add(flashcardList.get(flashcardIndex));
+                        }
+                        final Flashcard[] flashcardsToDeleteArray = flashcardsToDelete.toArray(new Flashcard[0]);
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MainActivity.getDb().flashcardDao().deleteFlashcards(flashcardsToDeleteArray);
+                            }
+                        }).start();
+                        mode.finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                selectedFlashcards.clear();
+                int size = gridView.getChildCount();
+                for (int i=0;i<size;i++){
+                    gridView.getChildAt(i).setBackgroundColor(Color.TRANSPARENT);
+                }
+                reloadFlashcards();
+            }
+        });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        reloadFlashcards();
+
+
 
 
     }
@@ -110,5 +167,26 @@ public class FlashcardsActivity extends AppCompatActivity {
             }).start();
 
         }
+    }
+
+    private void reloadFlashcards(){
+        //buscar en la db
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Future<List<Flashcard>> result = executorService.submit(new Callable<List<Flashcard>>() {
+            @Override
+            public List<Flashcard> call() throws Exception {
+                flashcardList = MainActivity.getDb().flashcardDao().getAllByCollection(collectionName);
+                return flashcardList;
+            }
+        });
+        try {
+            flashcardList = result.get();
+            if (adapter != null){
+                adapter.updateData(flashcardList);
+            }
+        } catch (Exception e){
+            flashcardList = new ArrayList<>();
+        }
+        executorService.shutdown();
     }
 }

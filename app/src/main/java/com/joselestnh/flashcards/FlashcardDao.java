@@ -26,4 +26,7 @@ public interface FlashcardDao {
 
     @Delete
     public void delete(Flashcard flashcard);
+
+    @Delete
+    public void deleteFlashcards(Flashcard... flashcards);
 }

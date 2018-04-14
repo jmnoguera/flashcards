@@ -1,6 +1,7 @@
 package com.joselestnh.flashcards;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -72,7 +73,7 @@ public class FlashcardsGridAdapter extends BaseAdapter {
         int flashcardType = flashcardList.get(position).getType();
         switch(flashcardType){
             case Flashcard.TRANSLATE:
-                background.setBackgroundColor(Color.LTGRAY);
+                background.setBackgroundResource(R.color.veryLightGray);
                 wordA.setText(this.flashcardList.get(position).getWordA());
                 wordA.setVisibility(View.VISIBLE);
                 break;
@@ -86,9 +87,11 @@ public class FlashcardsGridAdapter extends BaseAdapter {
         }
 
         //comprobar background plano y si se usa wordA o wordB
-
-
-
         return gridView;
+    }
+
+    public void updateData(List<Flashcard> flashcardList){
+        this.flashcardList = flashcardList;
+        notifyDataSetChanged();
     }
 }

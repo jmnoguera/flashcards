@@ -23,4 +23,7 @@ public interface CollectionDao {
 
     @Delete
     public void delete(Collection collection);
+
+    @Delete
+    public void deleteCollections(Collection... collections);
 }
