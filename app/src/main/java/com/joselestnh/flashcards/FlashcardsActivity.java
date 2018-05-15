@@ -140,9 +140,6 @@ public class FlashcardsActivity extends AppCompatActivity {
         super.onStart();
         reloadFlashcards();
 
-
-
-
     }
 
     @Override
@@ -157,7 +154,7 @@ public class FlashcardsActivity extends AppCompatActivity {
             String flashcardWordB = bundle.getString(Flashcard.KEY_FC_WORDB);
             byte[] flashcardImage = bundle.getByteArray(Flashcard.KEY_FC_IMAGE);
 
-            final Flashcard flashcard= new Flashcard(this.collectionName, flashcardName,
+            final Flashcard flashcard = new Flashcard(this.collectionName, flashcardName,
                     flashcardType, flashcardWordA, flashcardWordB, flashcardImage);
             new Thread(new Runnable() {
                 @Override

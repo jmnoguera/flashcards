@@ -18,7 +18,7 @@ public interface FlashcardDao {
     @Query("SELECT * FROM Flashcard")
     List<Flashcard> getAll();
 
-    @Query("SELECT fid, collection, name, type, wordA, wordB, image FROM Flashcard WHERE collection = :collection")
+    @Query("SELECT fid, collection, name, type, wordA, wordB, image, done FROM Flashcard WHERE collection = :collection")
     List<Flashcard> getAllByCollection(String collection);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

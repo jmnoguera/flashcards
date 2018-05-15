@@ -3,6 +3,7 @@ package com.joselestnh.flashcards;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
@@ -44,14 +45,19 @@ public class Flashcard {
     @ColumnInfo(name = "type")
     private int type;
 
+    //can be used in translate flashcards
     @ColumnInfo(name = "wordA")
     private String wordA;
 
+    //used as the solution of the flashcard
     @ColumnInfo(name = "wordB")
     private String wordB;
 
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB, name = "image")
     private byte[] image;
+
+    @ColumnInfo(name = "done")
+    private int done;
 
     public Flashcard(String collection, String name, int type, String wordA, String wordB, byte[] image) {
         this.collection = collection;
@@ -60,6 +66,18 @@ public class Flashcard {
         this.wordA = wordA;
         this.wordB = wordB;
         this.image = image;
+        this.done = 0;
+    }
+
+    @Ignore
+    public Flashcard(String collection, String name, int type, String wordA, String wordB, byte[] image, int done) {
+        this.collection = collection;
+        this.name = name;
+        this.type = type;
+        this.wordA = wordA;
+        this.wordB = wordB;
+        this.image = image;
+        this.done = done;
     }
 
     public int getFid() {
@@ -116,5 +134,13 @@ public class Flashcard {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public int getDone() {
+        return done;
+    }
+
+    public void setDone(int done) {
+        this.done = done;
     }
 }

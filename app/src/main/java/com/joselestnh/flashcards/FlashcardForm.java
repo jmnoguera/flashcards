@@ -67,8 +67,8 @@ public class FlashcardForm extends AppCompatActivity {
 
                     case Flashcard.RELATE:
                         findViewById(R.id.flashcardImageForm).setVisibility(View.VISIBLE);
-                        findViewById(R.id.flashcardWordAForm).setVisibility(View.VISIBLE);
-                        findViewById(R.id.flashcardWordBForm).setVisibility(View.GONE);
+                        findViewById(R.id.flashcardWordAForm).setVisibility(View.GONE);
+                        findViewById(R.id.flashcardWordBForm).setVisibility(View.VISIBLE);
 //                        findViewById(R.id.flashcardFormLayout).invalidate();
                         break;
 
@@ -93,11 +93,11 @@ public class FlashcardForm extends AppCompatActivity {
                 int flashcardType = ((Spinner)findViewById(R.id.flashcardSpinnerForm)).getSelectedItemPosition();
                 //int flashcardType = ((EditText)findViewById(R.id.collectionDescriptionForm)).getText().toString();
                 byte[] collectionImage = new byte[0];
-                String flashcardWordA = ((EditText)findViewById(R.id.flashcardWordAForm)).getText().toString();
-                String flashcardWordB = "";
+                String flashcardWordA = "";
+                String flashcardWordB = ((EditText)findViewById(R.id.flashcardWordBForm)).getText().toString();
                 switch (flashcardType){
                     case Flashcard.TRANSLATE:
-                        flashcardWordB = ((EditText)findViewById(R.id.flashcardWordBForm)).getText().toString();
+                        flashcardWordA = ((EditText)findViewById(R.id.flashcardWordAForm)).getText().toString();
                         break;
                     case Flashcard.RELATE:
                         Drawable drawable = ((ImageButton)findViewById(R.id.flashcardImageForm)).getDrawable();

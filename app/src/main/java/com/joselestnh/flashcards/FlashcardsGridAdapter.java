@@ -74,6 +74,7 @@ public class FlashcardsGridAdapter extends BaseAdapter {
         switch(flashcardType){
             case Flashcard.TRANSLATE:
                 background.setBackgroundResource(R.color.veryLightGray);
+                background.setImageBitmap(null);
                 wordA.setText(this.flashcardList.get(position).getWordA());
                 wordA.setVisibility(View.VISIBLE);
                 break;
