@@ -82,7 +82,7 @@ public class FlashcardsGridAdapter extends BaseAdapter {
             case Flashcard.RELATE:
                 byte[] imageBytes = this.flashcardList.get(position).getImage();
                 background.setImageBitmap(BitmapFactory.decodeByteArray(imageBytes,0,imageBytes.length));
-                wordA.setVisibility(View.GONE);
+                wordA.setVisibility(View.INVISIBLE);
                 break;
 
         }

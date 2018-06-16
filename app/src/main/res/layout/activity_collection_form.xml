@@ -17,6 +17,7 @@
         android:inputType="text"
         android:text=""
         android:hint="@string/name"
+        android:maxLength="30"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/collectionImageForm" />
@@ -31,6 +32,8 @@
         android:layout_marginTop="20dp"
         android:ems="10"
         android:inputType="textMultiLine"
+        android:maxLines="3"
+        android:maxLength="200"
         android:text=""
         android:hint="@string/description"
         android:gravity="start"

@@ -69,7 +69,7 @@ public class FlashcardsActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(FlashcardsActivity.this, "Funciona", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(FlashcardsActivity.this, "Funciona", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -162,6 +162,7 @@ public class FlashcardsActivity extends AppCompatActivity {
                     MainActivity.getDb().flashcardDao().insertFlashcard(flashcard);
                 }
             }).start();
+            reloadFlashcards();
 
         }
     }

@@ -13,6 +13,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +26,7 @@ public class CollectionForm extends AppCompatActivity {
 
     private final static int RESULT_LOAD_IMAGE = 1;
     private final static int GALLERY_PERMISSION = 10;
+    private final static int DESCRIPTION_MAX_LINES = 3;
 
     private String picturePath;
 
@@ -69,6 +72,30 @@ public class CollectionForm extends AppCompatActivity {
 
                 setResult(RESULT_OK,intent);
                 finish();
+            }
+        });
+
+        final EditText descriptionInput = findViewById(R.id.collectionDescriptionForm);
+        descriptionInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (descriptionInput.getLayout() != null &&
+                        descriptionInput.getLayout().getLineCount() > DESCRIPTION_MAX_LINES) {
+                    descriptionInput.getText().delete(
+                            descriptionInput.getText().length() - 1,
+                            descriptionInput.getText().length());
+                }
+
             }
         });
     }

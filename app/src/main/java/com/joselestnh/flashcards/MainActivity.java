@@ -40,14 +40,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //cargar de donde sea los datos de las colecciones
         db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,
                 "FlashCards-DB").build();
 
         reloadCollections();
 
 
-        //por defecto en el layout con +
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -68,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "Llega", Toast.LENGTH_SHORT).show();
                 openFlashcardsPool(position);
             }
         });
@@ -86,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                     View view = gridView.getChildAt(position);
                     view.setBackgroundColor(Color.LTGRAY);
                 }
-                //casmbiar color de fondo?
 
             }
 
@@ -120,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                                 db.collectionDao().deleteCollections(collectionsToDeleteArray);
                             }
                         }).start();
+                        reloadCollections();
                         mode.finish();
                         return true;
                     default:
@@ -163,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                     db.collectionDao().insertCollection(collection);
                 }
             }).start();
+            reloadCollections();
 
         }
     }
@@ -192,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
